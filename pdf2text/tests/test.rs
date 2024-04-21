@@ -4,7 +4,6 @@ use pdf2text::*;
 fn check_1() {
   let path = "tests/092891_hanrei.pdf";
   let s = pdf2text(path).unwrap();
-  println!("{s}");
   assert!(s.contains("他方、被告人は、当公判廷において反省の態度を示すだけでなく、保釈後、本"));
 }
 
@@ -13,7 +12,6 @@ fn check_clean_up() {
   let path = "tests/092900_hanrei.pdf";
   let s = pdf2text(path).unwrap();
   let s = clean_up(&s);
-  println!("{s}");
   assert!(s.contains(
     "３  被告のため、この判決に対する上告及び上告受理申立てのための付加\n期間を３０日と定める。"
   ));
