@@ -8,10 +8,12 @@ use serde::{Deserialize, Serialize};
 /// 日付（元号）
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Date {
-  era: Era,
-  year: usize,
-  month: Option<usize>,
-  day: Option<usize>,
+  pub era: Era,
+  pub year: usize,
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub month: Option<usize>,
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub day: Option<usize>,
 }
 
 impl Date {
@@ -1161,6 +1163,7 @@ pub struct LawPatchInfo {
   /// 改正・成立年月日
   pub patch_date: Date,
   /// 改正した法令の名前（成立法の場合はNone）
+  #[serde(skip_serializing_if = "Option::is_none")]
   pub patch_id: Option<LawId>,
 }
 
