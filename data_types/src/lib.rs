@@ -2,3 +2,4 @@
 
 pub mod jorei;
 pub mod law;
+pub mod precedent;
