@@ -1,8 +1,7 @@
 [workspace]
-members = ["pdf2text"]
+members = [ "data_types","pdf2text"]
 resolver = "2"
 
 [workspace.package]
 authors = ["Naoki Kaneko <puripuri2100@gmail.com>"]
-description = "A library for legal document analysis"
 edition = "2021"
