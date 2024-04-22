@@ -1,9 +1,8 @@
 //! 法律そのものに関する情報
 
-use std::str::FromStr;
-
 use japanese_law_xml_schema::law::Era;
 use serde::{Deserialize, Serialize};
+use std::str::FromStr;
 
 /// 日付（元号）
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]

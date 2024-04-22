@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 /// 条例の情報
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct JoreiInfo {
   #[serde(default)]
   pub collection: Vec<String>,
