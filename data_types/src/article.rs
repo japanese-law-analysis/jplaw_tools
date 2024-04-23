@@ -6,6 +6,7 @@ use japanese_law_xml_schema::{
   article_number::ArticleNumber,
   law::{LawBody, MainProvisionContents},
   paragraph::Paragraph,
+  suppl_provision,
 };
 use serde::{Deserialize, Serialize};
 
@@ -60,12 +61,20 @@ pub fn article_list_from_lawbody(
         v.append(&mut v2);
       }
       MainProvisionContents::Chapter(t) => {
-        let mut v2 = article_list_from_chapter(file_id, law_name, None, Some(&t.num), &t.children);
+        let mut v2 =
+          article_list_from_chapter(file_id, law_name, None, Some(&t.num), None, &t.children);
         v.append(&mut v2);
       }
       MainProvisionContents::Section(t) => {
-        let mut v2 =
-          article_list_from_section(file_id, law_name, None, None, Some(&t.num), &t.children);
+        let mut v2 = article_list_from_section(
+          file_id,
+          law_name,
+          None,
+          None,
+          Some(&t.num),
+          None,
+          &t.children,
+        );
         v.append(&mut v2);
       }
       MainProvisionContents::Paragraph(t) => {
@@ -91,6 +100,66 @@ pub fn article_list_from_lawbody(
       result: para_v,
     })
   }
+
+  for suppl_provision in &lawbody.suppl_provision {
+    let suppl_provision_name = &suppl_provision.amend_law_num.clone().unwrap_or_default();
+    let mut suppl_para_v = Vec::new();
+    for se in suppl_provision.children.iter() {
+      match se {
+        suppl_provision::SupplProvisionChildrenElement::Article(t) => {
+          let article_index = ArticleIndex {
+            file_id: file_id.to_string(),
+            law_name: law_name.to_string(),
+            article_number: t.num.clone(),
+            part_number: None,
+            chapter_number: None,
+            section_number: None,
+            subsection_number: None,
+            division_number: None,
+            suppl_provision_name: Some(suppl_provision_name.clone()),
+          };
+          v.push(AnalysisResultInfo {
+            article_index,
+            text_index_opt: None,
+            result: t.paragraph.clone(),
+          })
+        }
+        suppl_provision::SupplProvisionChildrenElement::Chapter(t) => {
+          let mut v2 = article_list_from_chapter(
+            file_id,
+            law_name,
+            None,
+            Some(&t.num),
+            Some(suppl_provision_name),
+            &t.children,
+          );
+          v.append(&mut v2);
+        }
+        suppl_provision::SupplProvisionChildrenElement::Paragraph(t) => {
+          suppl_para_v.push(t.clone());
+        }
+        _ => (),
+      }
+    }
+    if !suppl_para_v.is_empty() {
+      let article_index = ArticleIndex {
+        file_id: file_id.to_string(),
+        law_name: law_name.to_string(),
+        article_number: ArticleNumber::zero(),
+        part_number: None,
+        chapter_number: None,
+        section_number: None,
+        subsection_number: None,
+        division_number: None,
+        suppl_provision_name: Some(suppl_provision_name.clone()),
+      };
+      v.push(AnalysisResultInfo {
+        article_index,
+        text_index_opt: None,
+        result: suppl_para_v,
+      })
+    }
+  }
   v
 }
 
@@ -104,8 +173,14 @@ fn article_list_from_part(
   for contents in lst.iter() {
     match contents {
       PartContents::Chapter(t) => {
-        let mut v2 =
-          article_list_from_chapter(file_id, law_name, part_number, Some(&t.num), &t.children);
+        let mut v2 = article_list_from_chapter(
+          file_id,
+          law_name,
+          part_number,
+          Some(&t.num),
+          None,
+          &t.children,
+        );
         v.append(&mut v2)
       }
       PartContents::Article(t) => {
@@ -136,6 +211,7 @@ fn article_list_from_chapter(
   law_name: &str,
   part_number: Option<&ArticleNumber>,
   chapter_number: Option<&ArticleNumber>,
+  suppl_provision_name: Option<&String>,
   lst: &[ChapterContents],
 ) -> Vec<AnalysisResultInfo<Vec<Paragraph>>> {
   let mut v = Vec::new();
@@ -148,6 +224,7 @@ fn article_list_from_chapter(
           part_number,
           chapter_number,
           Some(&t.num),
+          suppl_provision_name,
           &t.children,
         );
         v.append(&mut v2)
@@ -162,7 +239,7 @@ fn article_list_from_chapter(
           section_number: None,
           subsection_number: None,
           division_number: None,
-          suppl_provision_name: None,
+          suppl_provision_name: suppl_provision_name.cloned(),
         };
         v.push(AnalysisResultInfo {
           article_index,
@@ -181,6 +258,7 @@ fn article_list_from_section(
   part_number: Option<&ArticleNumber>,
   chapter_number: Option<&ArticleNumber>,
   seciton_number: Option<&ArticleNumber>,
+  suppl_provision_name: Option<&String>,
   lst: &[SectionContents],
 ) -> Vec<AnalysisResultInfo<Vec<Paragraph>>> {
   let mut v = Vec::new();
@@ -194,6 +272,7 @@ fn article_list_from_section(
           chapter_number,
           seciton_number,
           Some(&t.num),
+          suppl_provision_name,
           &t.children,
         );
         v.append(&mut v2)
@@ -208,7 +287,7 @@ fn article_list_from_section(
           section_number: seciton_number.cloned(),
           subsection_number: None,
           division_number: None,
-          suppl_provision_name: None,
+          suppl_provision_name: suppl_provision_name.cloned(),
         };
         v.push(AnalysisResultInfo {
           article_index,
@@ -221,6 +300,7 @@ fn article_list_from_section(
   v
 }
 
+#[allow(clippy::too_many_arguments)]
 fn article_list_from_subsection(
   file_id: &str,
   law_name: &str,
@@ -228,6 +308,7 @@ fn article_list_from_subsection(
   chapter_number: Option<&ArticleNumber>,
   seciton_number: Option<&ArticleNumber>,
   subseciton_number: Option<&ArticleNumber>,
+  suppl_provision_name: Option<&String>,
   lst: &[SubsectionContents],
 ) -> Vec<AnalysisResultInfo<Vec<Paragraph>>> {
   let mut v = Vec::new();
@@ -242,6 +323,7 @@ fn article_list_from_subsection(
           seciton_number,
           None,
           &t.num,
+          suppl_provision_name,
           &t.children,
         );
         v.append(&mut v2)
@@ -255,7 +337,7 @@ fn article_list_from_subsection(
           chapter_number: chapter_number.cloned(),
           section_number: seciton_number.cloned(),
           subsection_number: subseciton_number.cloned(),
-          division_number: None,
+          division_number: subseciton_number.cloned(),
           suppl_provision_name: None,
         };
         v.push(AnalysisResultInfo {
@@ -278,6 +360,7 @@ fn article_list_from_division(
   seciton_number: Option<&ArticleNumber>,
   subseciton_number: Option<&ArticleNumber>,
   division_number: &ArticleNumber,
+  suppl_provision_name: Option<&String>,
   lst: &[Article],
 ) -> Vec<AnalysisResultInfo<Vec<Paragraph>>> {
   let mut v = Vec::new();
@@ -291,7 +374,7 @@ fn article_list_from_division(
       section_number: seciton_number.cloned(),
       subsection_number: subseciton_number.cloned(),
       division_number: Some(division_number.clone()),
-      suppl_provision_name: None,
+      suppl_provision_name: suppl_provision_name.cloned(),
     };
     v.push(AnalysisResultInfo {
       article_index,
