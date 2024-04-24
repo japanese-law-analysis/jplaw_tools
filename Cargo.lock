@@ -234,9 +234,9 @@ checksum = "49f1f14873335454500d59611f1cf4a4b0f786f9ac11f4312a78e4cf2566695b"
 
 [[package]]
 name = "japanese_law_xml_schema"
-version = "2.0.0"
+version = "3.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5e268c36a1ec266b024466b73e8779025f1d4659ac91dcc4ee025cd761f446d8"
+checksum = "fe57495f7f051925549a43983bc50a0e36f13b676728097c12ab6e6ebe6a7de1"
 dependencies = [
  "kansuji",
  "koyomi",

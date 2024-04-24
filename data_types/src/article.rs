@@ -4,8 +4,14 @@
 use japanese_law_xml_schema::{
   article::{Article, ChapterContents, PartContents, SectionContents, SubsectionContents},
   article_number::ArticleNumber,
+  class::SentenceOrColumnOrTable,
+  contents::ContentsElement,
   law::{LawBody, MainProvisionContents},
-  paragraph::Paragraph,
+  paragraph::{
+    Paragraph, Subitem1, Subitem10, Subitem2, Subitem3, Subitem4, Subitem5, Subitem6, Subitem7,
+    Subitem8, Subitem9,
+  },
+  sentence::SentenceElement,
   suppl_provision,
 };
 use serde::{Deserialize, Serialize};
@@ -389,10 +395,382 @@ fn article_list_from_division(
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TextIndex {
   /// 段落番号
-  pub paragraph: usize,
+  pub paragraph: ArticleNumber,
   /// 号の番号を上の階層から並べる
   /// 何もないときは空
-  pub items: Vec<usize>,
+  pub items: Vec<ArticleNumber>,
+}
+
+/// 段落のリストから文字列のリストとそのインデックスの組を生成する
+/// ルビと線は無視し、上付き文字は`^`、下付き文字は`_`で出力する
+pub fn text_list_from_paragraph(lst: &[Paragraph]) -> Vec<(TextIndex, String)> {
+  let mut v = Vec::new();
+  for para in lst.iter() {
+    let paragraph_num = &para.num;
+    let sentence_text = para
+      .sentence
+      .iter()
+      .map(|sentence| sentence_element_to_str(&sentence.contents))
+      .collect::<String>();
+    v.push((
+      TextIndex {
+        paragraph: paragraph_num.clone(),
+        items: Vec::new(),
+      },
+      sentence_text,
+    ));
+    let mut items = Vec::new();
+    for item in para.children.iter() {
+      let n = &item.num;
+      items.push(n.clone());
+      // childrenとsentenceの処理をする
+      let sentence_str = match &item.sentence {
+        SentenceOrColumnOrTable::Sentence(se) => se
+          .iter()
+          .map(|sentence| sentence_element_to_str(&sentence.contents))
+          .collect::<String>(),
+        _ => String::new(),
+      };
+      v.push((
+        TextIndex {
+          paragraph: paragraph_num.clone(),
+          items: items.clone(),
+        },
+        sentence_str,
+      ));
+      let mut v2 = text_list_from_subitem1(paragraph_num, items.clone(), &item.children);
+      v.append(&mut v2);
+    }
+  }
+  v
+}
+
+fn text_list_from_subitem1(
+  para_num: &ArticleNumber,
+  items: Vec<ArticleNumber>,
+  chldren: &[Subitem1],
+) -> Vec<(TextIndex, String)> {
+  let mut v = Vec::new();
+  for t in chldren.iter() {
+    let mut l = items.clone();
+    l.push(t.num.clone());
+    let sentence_str = match &t.sentence {
+      SentenceOrColumnOrTable::Sentence(se) => se
+        .iter()
+        .map(|sentence| sentence_element_to_str(&sentence.contents))
+        .collect::<String>(),
+      _ => String::new(),
+    };
+    v.push((
+      TextIndex {
+        paragraph: para_num.clone(),
+        items: l.clone(),
+      },
+      sentence_str,
+    ));
+    let mut v2 = text_list_from_subitem2(para_num, l.clone(), &t.children);
+    v.append(&mut v2);
+  }
+  v
+}
+
+fn text_list_from_subitem2(
+  para_num: &ArticleNumber,
+  items: Vec<ArticleNumber>,
+  chldren: &[Subitem2],
+) -> Vec<(TextIndex, String)> {
+  let mut v = Vec::new();
+  for t in chldren.iter() {
+    let mut l = items.clone();
+    l.push(t.num.clone());
+    let sentence_str = match &t.sentence {
+      SentenceOrColumnOrTable::Sentence(se) => se
+        .iter()
+        .map(|sentence| sentence_element_to_str(&sentence.contents))
+        .collect::<String>(),
+      _ => String::new(),
+    };
+    v.push((
+      TextIndex {
+        paragraph: para_num.clone(),
+        items: l.clone(),
+      },
+      sentence_str,
+    ));
+    let mut v2 = text_list_from_subitem3(para_num, l.clone(), &t.children);
+    v.append(&mut v2);
+  }
+  v
+}
+
+fn text_list_from_subitem3(
+  para_num: &ArticleNumber,
+  items: Vec<ArticleNumber>,
+  chldren: &[Subitem3],
+) -> Vec<(TextIndex, String)> {
+  let mut v = Vec::new();
+  for t in chldren.iter() {
+    let mut l = items.clone();
+    l.push(t.num.clone());
+    let sentence_str = match &t.sentence {
+      SentenceOrColumnOrTable::Sentence(se) => se
+        .iter()
+        .map(|sentence| sentence_element_to_str(&sentence.contents))
+        .collect::<String>(),
+      _ => String::new(),
+    };
+    v.push((
+      TextIndex {
+        paragraph: para_num.clone(),
+        items: l.clone(),
+      },
+      sentence_str,
+    ));
+    let mut v2 = text_list_from_subitem4(para_num, l.clone(), &t.children);
+    v.append(&mut v2);
+  }
+  v
+}
+
+fn text_list_from_subitem4(
+  para_num: &ArticleNumber,
+  items: Vec<ArticleNumber>,
+  chldren: &[Subitem4],
+) -> Vec<(TextIndex, String)> {
+  let mut v = Vec::new();
+  for t in chldren.iter() {
+    let mut l = items.clone();
+    l.push(t.num.clone());
+    let sentence_str = match &t.sentence {
+      SentenceOrColumnOrTable::Sentence(se) => se
+        .iter()
+        .map(|sentence| sentence_element_to_str(&sentence.contents))
+        .collect::<String>(),
+      _ => String::new(),
+    };
+    v.push((
+      TextIndex {
+        paragraph: para_num.clone(),
+        items: l.clone(),
+      },
+      sentence_str,
+    ));
+    let mut v2 = text_list_from_subitem5(para_num, l.clone(), &t.children);
+    v.append(&mut v2);
+  }
+  v
+}
+
+fn text_list_from_subitem5(
+  para_num: &ArticleNumber,
+  items: Vec<ArticleNumber>,
+  chldren: &[Subitem5],
+) -> Vec<(TextIndex, String)> {
+  let mut v = Vec::new();
+  for t in chldren.iter() {
+    let mut l = items.clone();
+    l.push(t.num.clone());
+    let sentence_str = match &t.sentence {
+      SentenceOrColumnOrTable::Sentence(se) => se
+        .iter()
+        .map(|sentence| sentence_element_to_str(&sentence.contents))
+        .collect::<String>(),
+      _ => String::new(),
+    };
+    v.push((
+      TextIndex {
+        paragraph: para_num.clone(),
+        items: l.clone(),
+      },
+      sentence_str,
+    ));
+    let mut v2 = text_list_from_subitem6(para_num, l.clone(), &t.children);
+    v.append(&mut v2);
+  }
+  v
+}
+
+fn text_list_from_subitem6(
+  para_num: &ArticleNumber,
+  items: Vec<ArticleNumber>,
+  chldren: &[Subitem6],
+) -> Vec<(TextIndex, String)> {
+  let mut v = Vec::new();
+  for t in chldren.iter() {
+    let mut l = items.clone();
+    l.push(t.num.clone());
+    let sentence_str = match &t.sentence {
+      SentenceOrColumnOrTable::Sentence(se) => se
+        .iter()
+        .map(|sentence| sentence_element_to_str(&sentence.contents))
+        .collect::<String>(),
+      _ => String::new(),
+    };
+    v.push((
+      TextIndex {
+        paragraph: para_num.clone(),
+        items: l.clone(),
+      },
+      sentence_str,
+    ));
+    let mut v2 = text_list_from_subitem7(para_num, l.clone(), &t.children);
+    v.append(&mut v2);
+  }
+  v
+}
+
+fn text_list_from_subitem7(
+  para_num: &ArticleNumber,
+  items: Vec<ArticleNumber>,
+  chldren: &[Subitem7],
+) -> Vec<(TextIndex, String)> {
+  let mut v = Vec::new();
+  for t in chldren.iter() {
+    let mut l = items.clone();
+    l.push(t.num.clone());
+    let sentence_str = match &t.sentence {
+      SentenceOrColumnOrTable::Sentence(se) => se
+        .iter()
+        .map(|sentence| sentence_element_to_str(&sentence.contents))
+        .collect::<String>(),
+      _ => String::new(),
+    };
+    v.push((
+      TextIndex {
+        paragraph: para_num.clone(),
+        items: l.clone(),
+      },
+      sentence_str,
+    ));
+    let mut v2 = text_list_from_subitem8(para_num, l.clone(), &t.children);
+    v.append(&mut v2);
+  }
+  v
+}
+
+fn text_list_from_subitem8(
+  para_num: &ArticleNumber,
+  items: Vec<ArticleNumber>,
+  chldren: &[Subitem8],
+) -> Vec<(TextIndex, String)> {
+  let mut v = Vec::new();
+  for t in chldren.iter() {
+    let mut l = items.clone();
+    l.push(t.num.clone());
+    let sentence_str = match &t.sentence {
+      SentenceOrColumnOrTable::Sentence(se) => se
+        .iter()
+        .map(|sentence| sentence_element_to_str(&sentence.contents))
+        .collect::<String>(),
+      _ => String::new(),
+    };
+    v.push((
+      TextIndex {
+        paragraph: para_num.clone(),
+        items: l.clone(),
+      },
+      sentence_str,
+    ));
+    let mut v2 = text_list_from_subitem9(para_num, l.clone(), &t.children);
+    v.append(&mut v2);
+  }
+  v
+}
+
+fn text_list_from_subitem9(
+  para_num: &ArticleNumber,
+  items: Vec<ArticleNumber>,
+  chldren: &[Subitem9],
+) -> Vec<(TextIndex, String)> {
+  let mut v = Vec::new();
+  for t in chldren.iter() {
+    let mut l = items.clone();
+    l.push(t.num.clone());
+    let sentence_str = match &t.sentence {
+      SentenceOrColumnOrTable::Sentence(se) => se
+        .iter()
+        .map(|sentence| sentence_element_to_str(&sentence.contents))
+        .collect::<String>(),
+      _ => String::new(),
+    };
+    v.push((
+      TextIndex {
+        paragraph: para_num.clone(),
+        items: l.clone(),
+      },
+      sentence_str,
+    ));
+    let mut v2 = text_list_from_subitem10(para_num, l.clone(), &t.children);
+    v.append(&mut v2);
+  }
+  v
+}
+
+fn text_list_from_subitem10(
+  para_num: &ArticleNumber,
+  items: Vec<ArticleNumber>,
+  chldren: &[Subitem10],
+) -> Vec<(TextIndex, String)> {
+  let mut v = Vec::new();
+  for t in chldren.iter() {
+    let mut l = items.clone();
+    l.push(t.num.clone());
+    let sentence_str = match &t.sentence {
+      SentenceOrColumnOrTable::Sentence(se) => se
+        .iter()
+        .map(|sentence| sentence_element_to_str(&sentence.contents))
+        .collect::<String>(),
+      _ => String::new(),
+    };
+    v.push((
+      TextIndex {
+        paragraph: para_num.clone(),
+        items: l,
+      },
+      sentence_str,
+    ));
+  }
+  v
+}
+
+fn sentence_element_to_str(element: &[SentenceElement]) -> String {
+  let mut s = String::new();
+  for e in element.iter() {
+    match e {
+      SentenceElement::String(s2) => s.push_str(s2),
+      SentenceElement::Sub(s2) => {
+        s.push_str("_{");
+        s.push_str(&s2.text);
+        s.push('}');
+      }
+      SentenceElement::Sup(s2) => {
+        s.push_str("^{");
+        s.push_str(&s2.text);
+        s.push('}');
+      }
+      SentenceElement::ArithFormula(arith_formula) => {
+        let contents = &arith_formula.contentes.contents;
+        for c in contents.iter() {
+          match c {
+            ContentsElement::String(s2) => s.push_str(s2),
+            ContentsElement::Sub(s2) => {
+              s.push_str("_{");
+              s.push_str(&s2.text);
+              s.push('}');
+            }
+            ContentsElement::Sup(s2) => {
+              s.push_str("^{");
+              s.push_str(&s2.text);
+              s.push('}');
+            }
+            _ => (),
+          }
+        }
+      }
+      _ => (),
+    }
+  }
+  s
 }
 
 /// 解析結果を書き出すときの型
