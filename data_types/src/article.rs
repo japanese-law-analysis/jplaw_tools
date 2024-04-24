@@ -440,6 +440,7 @@ pub fn text_list_from_paragraph(lst: &[Paragraph]) -> Vec<(TextIndex, String)> {
       ));
       let mut v2 = text_list_from_subitem1(paragraph_num, items.clone(), &item.children);
       v.append(&mut v2);
+      items.pop();
     }
   }
   v
@@ -771,6 +772,176 @@ fn sentence_element_to_str(element: &[SentenceElement]) -> String {
     }
   }
   s
+}
+
+#[test]
+fn check_para_to_text() {
+  use japanese_law_xml_schema::{class, paragraph, sentence, text};
+  fn text_to_sentence(num: usize, text: &str) -> sentence::Sentence {
+    sentence::Sentence {
+      contents: vec![sentence::SentenceElement::String(text.to_string())],
+      num: Some(num),
+      function: None,
+      indent: None,
+      writing_mode: text::WritingMode::Vertical,
+    }
+  }
+  let para_lst = vec![
+    paragraph::Paragraph {
+      caption: None,
+      paragraph_num: text::Text{contents: Vec::new()},
+      amend_provision: Vec::new(),
+      class: Vec::new(),
+      sentence: vec![sentence::Sentence {
+        contents: vec![sentence::SentenceElement::String(
+          "被保佐人が次に掲げる行為をするには、その保佐人の同意を得なければならない。ただし、第九条ただし書に規定する行為については、この限りでない。"
+            .to_string()
+        )],
+        num: Some(1),
+        function: None,
+        indent: None,
+        writing_mode: text::WritingMode::Vertical
+      }],
+      struct_list: Vec::new(),
+      children: vec![
+        paragraph::Item {
+          title: None,
+          sentence: class::SentenceOrColumnOrTable::Sentence(vec![text_to_sentence(1, "元本を領収し、又は利用すること。")]),
+          children: Vec::new(),
+          struct_list: Vec::new(),
+          num: ArticleNumber::from_num_str("1").unwrap(),
+          delete: false,
+          hide: false
+        },
+        paragraph::Item {
+          title: None,
+          sentence: class::SentenceOrColumnOrTable::Sentence(vec![text_to_sentence(1, "主たる債務者が法人である場合の次に掲げる者")]),
+          children: vec![
+            paragraph::Subitem1 {
+              title: None,
+              sentence: class::SentenceOrColumnOrTable::Sentence(vec![text_to_sentence(1, "主たる債務者の総株主の議決権（株主総会において決議をすることができる事項の全部につき議決権を行使することができない株式についての議決権を除く。以下この号において同じ。）の過半数を有する者")]),
+              children: Vec::new(),
+              struct_list: Vec::new(),
+              num: ArticleNumber::from_num_str("1").unwrap(),
+              delete: false,
+              hide: false
+            }
+          ],
+          struct_list: Vec::new(),
+          num: ArticleNumber::from_num_str("2").unwrap(),
+          delete: false,
+          hide: false
+        },
+        paragraph::Item {
+          title: None,
+          sentence: class::SentenceOrColumnOrTable::Sentence(vec![text_to_sentence(1, "不動産その他重要な財産に関する権利の得喪を目的とする行為をすること。")]),
+          children: Vec::new(),
+          struct_list: Vec::new(),
+          num: ArticleNumber::from_num_str("3").unwrap(),
+          delete: false,
+          hide: false
+        }
+      ],
+      num: ArticleNumber::from_num_str("1").unwrap(),
+      old_style: false,
+      old_num: false,
+      hide: false,
+    },paragraph::Paragraph {
+      caption: None,
+      paragraph_num: text::Text{contents: Vec::new()},
+      amend_provision: Vec::new(),
+      class: Vec::new(),
+      sentence: vec![sentence::Sentence {
+        contents: vec![sentence::SentenceElement::String(
+          "家庭裁判所は、第十一条本文に規定する者又は保佐人若しくは保佐監督人の請求により、被保佐人が前項各号に掲げる行為以外の行為をする場合であってもその保佐人の同意を得なければならない旨の審判をすることができる。ただし、第九条ただし書に規定する行為については、この限りでない。"
+            .to_string()
+        )],
+        num: Some(1),
+        function: None,
+        indent: None,
+        writing_mode: text::WritingMode::Vertical
+      }],
+      struct_list: Vec::new(),
+      children: Vec::new(),
+      num: ArticleNumber::from_num_str("2").unwrap(),
+      old_style: false,
+      old_num: false,
+      hide: false,
+    }
+  ];
+  let text_lst = text_list_from_paragraph(&para_lst);
+  assert_eq!(
+    text_lst,
+    vec![
+      (
+        TextIndex {
+          paragraph: ArticleNumber {
+            base_number: 1,
+            eda_numbers: Vec::new(),
+            range_end_numbers: Vec::new()
+          },
+          items: Vec::new()
+        },
+        "被保佐人が次に掲げる行為をするには、その保佐人の同意を得なければならない。ただし、第九条ただし書に規定する行為については、この限りでない。".to_string()
+      ),
+      (
+        TextIndex {
+          paragraph: ArticleNumber {
+            base_number: 1,
+            eda_numbers: Vec::new(),
+            range_end_numbers: Vec::new()
+          },
+          items: vec![ArticleNumber{base_number: 1, eda_numbers: Vec::new(), range_end_numbers: Vec::new()}]
+        },
+        "元本を領収し、又は利用すること。".to_string()
+      ),
+      (
+        TextIndex {
+          paragraph: ArticleNumber {
+            base_number: 1,
+            eda_numbers: Vec::new(),
+            range_end_numbers: Vec::new()
+          },
+          items: vec![ArticleNumber{base_number: 2, eda_numbers: Vec::new(), range_end_numbers: Vec::new()}]
+        },
+        "主たる債務者が法人である場合の次に掲げる者".to_string()
+      ),
+      (
+        TextIndex {
+          paragraph: ArticleNumber {
+            base_number: 1,
+            eda_numbers: Vec::new(),
+            range_end_numbers: Vec::new()
+          },
+          items: vec![ArticleNumber{base_number: 2, eda_numbers: Vec::new(), range_end_numbers: Vec::new()},
+          ArticleNumber{base_number: 1, eda_numbers: Vec::new(), range_end_numbers: Vec::new()}]
+        },
+        "主たる債務者の総株主の議決権（株主総会において決議をすることができる事項の全部につき議決権を行使することができない株式についての議決権を除く。以下この号において同じ。）の過半数を有する者".to_string()
+      ),
+      (
+        TextIndex {
+          paragraph: ArticleNumber {
+            base_number: 1,
+            eda_numbers: Vec::new(),
+            range_end_numbers: Vec::new()
+          },
+          items: vec![ArticleNumber{base_number: 3, eda_numbers: Vec::new(), range_end_numbers: Vec::new()}]
+        },
+        "不動産その他重要な財産に関する権利の得喪を目的とする行為をすること。".to_string()
+      ),
+      (
+        TextIndex {
+          paragraph: ArticleNumber {
+            base_number: 2,
+            eda_numbers: Vec::new(),
+            range_end_numbers: Vec::new()
+          },
+          items: Vec::new()
+        },
+        "家庭裁判所は、第十一条本文に規定する者又は保佐人若しくは保佐監督人の請求により、被保佐人が前項各号に掲げる行為以外の行為をする場合であってもその保佐人の同意を得なければならない旨の審判をすることができる。ただし、第九条ただし書に規定する行為については、この限りでない。".to_string()
+      ),
+    ]
+  );
 }
 
 /// 解析結果を書き出すときの型
