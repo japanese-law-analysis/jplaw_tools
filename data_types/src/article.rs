@@ -1,6 +1,7 @@
 //! 条文に関する型と関数の定義
 //!
 
+use crate::analysis::AnalysisResultInfo;
 use japanese_law_xml_schema::{
   article::{Article, ChapterContents, PartContents, SectionContents, SubsectionContents},
   article_number::ArticleNumber,
@@ -942,12 +943,4 @@ fn check_para_to_text() {
       ),
     ]
   );
-}
-
-/// 解析結果を書き出すときの型
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
-pub struct AnalysisResultInfo<T: std::fmt::Debug + Clone + std::hash::Hash + PartialEq + Eq> {
-  pub article_index: ArticleIndex,
-  pub text_index_opt: Option<TextIndex>,
-  pub result: T,
 }

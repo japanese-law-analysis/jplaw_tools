@@ -10,3 +10,4 @@ edition.workspace = true
 [dependencies]
 japanese_law_xml_schema = "3.0.0"
 serde = { version = "1.0.198", features = ["derive"] }
+thiserror = "1.0.59"
