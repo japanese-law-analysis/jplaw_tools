@@ -6,3 +6,4 @@ resolver = "2"
 authors = ["Naoki Kaneko <puripuri2100@gmail.com>"]
 edition = "2021"
 version = "0.1.0"
+license = "MIT"

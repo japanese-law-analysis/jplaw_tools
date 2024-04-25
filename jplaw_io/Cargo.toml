@@ -4,6 +4,7 @@ authors.workspace = true
 edition.workspace = true
 version.workspace = true
 description = "ファイル入出力とログの設定を行う"
+license.workspace = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
