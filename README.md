@@ -2,6 +2,7 @@
     <img width="150" alt="Logo" src="https://raw.githubusercontent.com/japanese-law-analysis/.github/master/icon/icon.svg">
 </p>
 
+[![Workflow Status](https://github.com/japanese-law-analysis/jplaw_tools/workflows/Rust%20CI/badge.svg)](https://github.com/japanese-law-analysis/jplaw_tools/actions?query=workflow%3A%22Rust%2BCI%22)
 
 # jplaw_tools
 
