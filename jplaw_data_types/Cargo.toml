@@ -1,6 +1,6 @@
 [package]
 name = "jplaw_data_types"
-description = ""
+description = "法令を扱い解析する際に必要なデータ構造"
 authors.workspace = true
 edition.workspace = true
 version.workspace = true

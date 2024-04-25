@@ -3,7 +3,7 @@ name = "jplaw_pdf2text"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
-description = "PDFファイルから本文テキストを抽出する"
+description = "判例のPDFファイルから本文テキストを抽出する"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
