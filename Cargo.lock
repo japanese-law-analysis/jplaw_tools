@@ -125,15 +125,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "data_types"
-version = "0.1.0"
-dependencies = [
- "japanese_law_xml_schema",
- "serde",
- "thiserror",
-]
-
-[[package]]
 name = "deranged"
 version = "0.3.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -285,6 +276,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "jplaw_data_types"
+version = "0.1.0"
+dependencies = [
+ "japanese_law_xml_schema",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
 name = "jplaw_io"
 version = "0.1.0"
 dependencies = [
@@ -294,6 +294,15 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-subscriber",
+]
+
+[[package]]
+name = "jplaw_pdf2text"
+version = "0.1.0"
+dependencies = [
+ "pdf-extract",
+ "regex",
+ "thiserror",
 ]
 
 [[package]]
@@ -460,15 +469,6 @@ dependencies = [
  "postscript",
  "type1-encoding-parser",
  "unicode-normalization",
-]
-
-[[package]]
-name = "pdf2text"
-version = "0.1.0"
-dependencies = [
- "pdf-extract",
- "regex",
- "thiserror",
 ]
 
 [[package]]
