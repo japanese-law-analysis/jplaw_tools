@@ -58,7 +58,7 @@ pub async fn flush_file_value_lst(file: &mut File) -> Result<(), IoError> {
 
 #[tokio::test]
 async fn test() {
-  let mut f = gen_file_value_lst("tests/test.json").await.unwrap();
+  let mut f = gen_file_value_lst("./test.json").await.unwrap();
   for v in 100..200 {
     write_value_lst(&mut f, v).await.unwrap();
   }
