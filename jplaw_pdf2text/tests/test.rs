@@ -1,4 +1,4 @@
-use pdf2text::*;
+use jplaw_pdf2text::*;
 
 #[test]
 fn check_1() {

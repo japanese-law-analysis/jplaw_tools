@@ -1,9 +1,10 @@
 [package]
-name = "data_types"
-version = "0.1.0"
-description = ""
+name = "jplaw_data_types"
+description = "法令を扱い解析する際に必要なデータ構造"
 authors.workspace = true
 edition.workspace = true
+version.workspace = true
+license.workspace = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

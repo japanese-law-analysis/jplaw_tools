@@ -1,7 +1,9 @@
 [workspace]
-members = [ "jplaw_io", "data_types","pdf2text"]
+members = [ "jplaw_io", "jplaw_data_types","jplaw_pdf2text"]
 resolver = "2"
 
 [workspace.package]
 authors = ["Naoki Kaneko <puripuri2100@gmail.com>"]
 edition = "2021"
+version = "0.1.0"
+license = "MIT"
