@@ -1,5 +1,5 @@
 [workspace]
-members = [ "data_types","pdf2text"]
+members = [ "jplaw_io", "data_types","pdf2text"]
 resolver = "2"
 
 [workspace.package]
