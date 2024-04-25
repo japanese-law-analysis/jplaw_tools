@@ -1,9 +1,13 @@
 //! ファイルIOとログの出力を行う
 
+use std::fmt::Debug;
+
 use serde::{de::DeserializeOwned, Serialize};
 use thiserror::Error;
 use tokio::fs::File;
 use tokio::io::{self, AsyncReadExt, AsyncWriteExt};
+use tracing::subscriber::SetGlobalDefaultError;
+use tracing::{error, info, warn};
 
 #[derive(Debug, Error)]
 pub enum IoError {
@@ -59,4 +63,38 @@ async fn test() {
     write_value_lst(&mut f, v).await.unwrap();
   }
   flush_file_value_lst(&mut f).await.unwrap();
+}
+
+/// ログの出力制御
+pub async fn init_logger() -> Result<(), SetGlobalDefaultError> {
+  let subscriber = tracing_subscriber::fmt()
+    .with_max_level(tracing::Level::INFO)
+    .finish();
+  tracing::subscriber::set_global_default(subscriber)?;
+  Ok(())
+}
+
+/// 処理の開始を知らせる
+pub fn start_log<T: Debug>(message: &str, value: &T) {
+  info!("[START] {message}: {value:?}")
+}
+
+/// 処理の終了を知らせる
+pub fn end_log<T: Debug>(message: &str, value: &T) {
+  info!("[END] {message}: {value:?}")
+}
+
+/// 何かしらの情報を出すログ
+pub fn info_log<T: Debug>(message: &str, value: &T) {
+  info!("[INFO] {message}: {value:?}")
+}
+
+/// 警告のログ
+pub fn wran_log<T: Debug>(message: &str, value: &T) {
+  warn!("[WARNING] {message}: {value:?}")
+}
+
+/// エラーのログ
+pub fn error_log<T: Debug>(message: &str, value: &T) {
+  error!("[ERROR] {message}: {value:?}")
 }
