@@ -14,6 +14,7 @@ use japanese_law_xml_schema::{
   },
   sentence::SentenceElement,
   suppl_provision,
+  text::{Text, TextElement},
 };
 use serde::{Deserialize, Serialize};
 
@@ -735,7 +736,21 @@ fn text_list_from_subitem10(
   v
 }
 
-fn sentence_element_to_str(element: &[SentenceElement]) -> String {
+pub fn text_to_str(text: &Text) -> String {
+  let mut s = String::new();
+  for v in text.contents.iter() {
+    match v {
+      TextElement::Sub(sub) => s.push_str(&sub.text),
+      TextElement::Sup(sup) => s.push_str(&sup.text),
+      TextElement::Ruby(ruby) => s.push_str(&text_to_str(&ruby.text)),
+      TextElement::Line(_) => (),
+      TextElement::Text(str) => s.push_str(str),
+    }
+  }
+  s
+}
+
+pub fn sentence_element_to_str(element: &[SentenceElement]) -> String {
   let mut s = String::new();
   for e in element.iter() {
     match e {
