@@ -1091,11 +1091,11 @@ pub struct LawId {
 impl Display for LawId {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     match self.era {
-      Era::Meiji => write!(f, "1{:02}{:?}", self.year, self.law_id_type),
-      Era::Taisho => write!(f, "2{:02}{:?}", self.year, self.law_id_type),
-      Era::Showa => write!(f, "3{:02}{:?}", self.year, self.law_id_type),
-      Era::Heisei => write!(f, "4{:02}{:?}", self.year, self.law_id_type),
-      Era::Reiwa => write!(f, "5{:02}{:?}", self.year, self.law_id_type),
+      Era::Meiji => write!(f, "1{:02}{}", self.year, self.law_id_type),
+      Era::Taisho => write!(f, "2{:02}{}", self.year, self.law_id_type),
+      Era::Showa => write!(f, "3{:02}{}", self.year, self.law_id_type),
+      Era::Heisei => write!(f, "4{:02}{}", self.year, self.law_id_type),
+      Era::Reiwa => write!(f, "5{:02}{}", self.year, self.law_id_type),
     }
   }
 }
