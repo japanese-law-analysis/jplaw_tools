@@ -2,7 +2,7 @@
 
 use japanese_law_xml_schema::law::Era;
 use serde::{Deserialize, Serialize};
-use std::str::FromStr;
+use std::{fmt::Display, str::FromStr};
 
 /// 日付（元号）
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
@@ -887,51 +887,54 @@ pub enum LawIdType {
   },
 }
 
-impl ToString for LawIdType {
-  fn to_string(&self) -> String {
+impl Display for LawIdType {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     use LawIdType::*;
     match self {
-      Constitution => "CONSTITUTION".to_string(),
+      Constitution => write!(f, "CONSTITUTION"),
       Act { rippou_type, num } => match &rippou_type {
-        RippouType::Kakuhou => format!("AC0000000{num:03}"),
-        RippouType::Syuin => format!("AC1000000{num:03}"),
-        RippouType::Sanin => format!("AC0100000{num:03}"),
+        RippouType::Kakuhou => write!(f, "AC0000000{num:03}"),
+        RippouType::Syuin => write!(f, "AC1000000{num:03}"),
+        RippouType::Sanin => write!(f, "AC0100000{num:03}"),
       },
       CabinetOrder { efficacy, num } => match &efficacy {
-        LawEfficacy::Law => format!("CO1000000{num:03}"),
-        LawEfficacy::CabinetOrder => format!("CO0000000{num:03}"),
+        LawEfficacy::Law => write!(f, "CO1000000{num:03}"),
+        LawEfficacy::CabinetOrder => write!(f, "CO0000000{num:03}"),
       },
       ImperialOrder { efficacy, num } => match &efficacy {
-        LawEfficacy::Law => format!("IO1000000{num:03}"),
-        LawEfficacy::CabinetOrder => format!("IO0000000{num:03}"),
+        LawEfficacy::Law => write!(f, "IO1000000{num:03}"),
+        LawEfficacy::CabinetOrder => write!(f, "IO0000000{num:03}"),
       },
       DajokanFukoku { efficacy, num } => match &efficacy {
-        LawEfficacy::Law => format!("DF1000000{num:03}"),
-        LawEfficacy::CabinetOrder => format!("DF0000000{num:03}"),
+        LawEfficacy::Law => write!(f, "DF1000000{num:03}"),
+        LawEfficacy::CabinetOrder => write!(f, "DF0000000{num:03}"),
       },
       DajokanTasshi { efficacy, num } => match &efficacy {
-        LawEfficacy::Law => format!("DT1000000{num:03}"),
-        LawEfficacy::CabinetOrder => format!("DT0000000{num:03}"),
+        LawEfficacy::Law => write!(f, "DT1000000{num:03}"),
+        LawEfficacy::CabinetOrder => write!(f, "DT0000000{num:03}"),
       },
       DajokanHutatsu { efficacy, num } => match &efficacy {
-        LawEfficacy::Law => format!("DH1000000{num:03}"),
-        LawEfficacy::CabinetOrder => format!("DH0000000{num:03}"),
+        LawEfficacy::Law => write!(f, "DH1000000{num:03}"),
+        LawEfficacy::CabinetOrder => write!(f, "DH0000000{num:03}"),
       },
       MinistryOrder { ministry, num } => match &ministry {
-        Ministry::M1(m) => format!("M1{:X>07}{num:03}", ministry_list_to_usize(m)),
-        Ministry::M2(m) => format!("M2{:X>07}{num:03}", ministry_list_to_usize(m)),
-        Ministry::M3(m) => format!("M3{:X>07}{num:03}", ministry_list_to_usize(m)),
-        Ministry::M4(m) => format!("M4{:X>07}{num:03}", ministry_list_to_usize(m)),
-        Ministry::M5(m) => format!("M5{:07X}{num:03}", ministry_list_to_usize(m)),
-        Ministry::M6(m) => format!("M6{:X>07}{num:03}", ministry_list_to_usize(m)),
+        Ministry::M1(m) => write!(f, "M1{:X>07}{num:03}", ministry_list_to_usize(m)),
+        Ministry::M2(m) => write!(f, "M2{:X>07}{num:03}", ministry_list_to_usize(m)),
+        Ministry::M3(m) => write!(f, "M3{:X>07}{num:03}", ministry_list_to_usize(m)),
+        Ministry::M4(m) => write!(f, "M4{:X>07}{num:03}", ministry_list_to_usize(m)),
+        Ministry::M5(m) => write!(f, "M5{:07X}{num:03}", ministry_list_to_usize(m)),
+        Ministry::M6(m) => write!(f, "M6{:X>07}{num:03}", ministry_list_to_usize(m)),
       },
       Jinjin {
         kind,
         kind_serial_number,
         amendment_serial_number,
-      } => format!("RJNJ{kind:02}{kind_serial_number:03}{amendment_serial_number:03}"),
-      Regulation { institution, num } => format!("R{:>07}{num:03}", institution.to_int()),
-      PrimeMinisterDecision { month, day, num } => format!("RPMD{month:02}{day:02}{num:04}"),
+      } => write!(
+        f,
+        "RJNJ{kind:02}{kind_serial_number:03}{amendment_serial_number:03}"
+      ),
+      Regulation { institution, num } => write!(f, "R{:>07}{num:03}", institution.to_int()),
+      PrimeMinisterDecision { month, day, num } => write!(f, "RPMD{month:02}{day:02}{num:04}"),
     }
   }
 }
@@ -1085,14 +1088,14 @@ pub struct LawId {
   law_id_type: LawIdType,
 }
 
-impl ToString for LawId {
-  fn to_string(&self) -> String {
+impl Display for LawId {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     match self.era {
-      Era::Meiji => format!("1{:02}{}", self.year, self.law_id_type.to_string()),
-      Era::Taisho => format!("2{:02}{}", self.year, self.law_id_type.to_string()),
-      Era::Showa => format!("3{:02}{}", self.year, self.law_id_type.to_string()),
-      Era::Heisei => format!("4{:02}{}", self.year, self.law_id_type.to_string()),
-      Era::Reiwa => format!("5{:02}{}", self.year, self.law_id_type.to_string()),
+      Era::Meiji => write!(f, "1{:02}{:?}", self.year, self.law_id_type),
+      Era::Taisho => write!(f, "2{:02}{:?}", self.year, self.law_id_type),
+      Era::Showa => write!(f, "3{:02}{:?}", self.year, self.law_id_type),
+      Era::Heisei => write!(f, "4{:02}{:?}", self.year, self.law_id_type),
+      Era::Reiwa => write!(f, "5{:02}{:?}", self.year, self.law_id_type),
     }
   }
 }
