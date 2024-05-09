@@ -63,6 +63,20 @@ impl Date {
   }
 }
 
+impl PartialOrd for Date {
+  fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+    Some(self.cmp(other))
+  }
+}
+
+impl Ord for Date {
+  fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+    let s = self.get_ad() * 10000 + self.month.unwrap_or(0) * 100 + self.day.unwrap_or(0);
+    let o = other.get_ad() * 10000 + other.month.unwrap_or(0) * 100 + other.day.unwrap_or(0);
+    s.cmp(&o)
+  }
+}
+
 /// 法律の立法の種類
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub enum RippouType {
