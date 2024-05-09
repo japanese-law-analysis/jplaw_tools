@@ -959,7 +959,7 @@ impl FromStr for LawIdType {
     use LawIdType::*;
     if s == "CONSTITUTION" {
       Ok(Constitution)
-    } else if &s[0..1] == "AC" {
+    } else if &s[0..=1] == "AC" {
       let rippou_type_s = &s[2..=8].parse::<usize>().map_err(|_| ())?;
       let rippou_type = if *rippou_type_s == 0 {
         RippouType::Kakuhou
@@ -1149,6 +1149,24 @@ fn check_from_str_law_id() {
           M5Ministry::MinistryOfPostsAndTelecommunicationsOrdinance
         ]),
         num: 4
+      }
+    }
+  );
+  assert_eq!(law_id.to_string(), s);
+}
+
+#[test]
+fn check_from_str_law_id_2() {
+  let s = "345AC0000000089";
+  let law_id = LawId::from_str(s).unwrap();
+  assert_eq!(
+    law_id,
+    LawId {
+      era: Era::Showa,
+      year: 45,
+      law_id_type: LawIdType::Act {
+        rippou_type: RippouType::Kakuhou,
+        num: 89
       }
     }
   );
