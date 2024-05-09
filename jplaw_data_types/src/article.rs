@@ -284,6 +284,20 @@ fn article_list_from_section(
         );
         v.append(&mut v2)
       }
+      SectionContents::Division(t) => {
+        let mut v2 = article_list_from_division(
+          file_id,
+          law_name,
+          part_number,
+          chapter_number,
+          seciton_number,
+          None,
+          &t.num,
+          suppl_provision_name,
+          &t.children,
+        );
+        v.append(&mut v2)
+      }
       SectionContents::Article(t) => {
         let article_index = ArticleIndex {
           file_id: file_id.to_string(),
@@ -399,7 +413,7 @@ pub struct TextIndex {
   pub paragraph: ArticleNumber,
   /// 号の番号を上の階層から並べる
   /// 何もないときは空
-  pub items: Vec<ArticleNumber>,
+  pub items: Vec<Option<ArticleNumber>>,
 }
 
 /// 段落のリストから文字列のリストとそのインデックスの組を生成する
@@ -449,7 +463,7 @@ pub fn text_list_from_paragraph(lst: &[Paragraph]) -> Vec<(TextIndex, String)> {
 
 fn text_list_from_subitem1(
   para_num: &ArticleNumber,
-  items: Vec<ArticleNumber>,
+  items: Vec<Option<ArticleNumber>>,
   chldren: &[Subitem1],
 ) -> Vec<(TextIndex, String)> {
   let mut v = Vec::new();
@@ -478,7 +492,7 @@ fn text_list_from_subitem1(
 
 fn text_list_from_subitem2(
   para_num: &ArticleNumber,
-  items: Vec<ArticleNumber>,
+  items: Vec<Option<ArticleNumber>>,
   chldren: &[Subitem2],
 ) -> Vec<(TextIndex, String)> {
   let mut v = Vec::new();
@@ -507,7 +521,7 @@ fn text_list_from_subitem2(
 
 fn text_list_from_subitem3(
   para_num: &ArticleNumber,
-  items: Vec<ArticleNumber>,
+  items: Vec<Option<ArticleNumber>>,
   chldren: &[Subitem3],
 ) -> Vec<(TextIndex, String)> {
   let mut v = Vec::new();
@@ -536,7 +550,7 @@ fn text_list_from_subitem3(
 
 fn text_list_from_subitem4(
   para_num: &ArticleNumber,
-  items: Vec<ArticleNumber>,
+  items: Vec<Option<ArticleNumber>>,
   chldren: &[Subitem4],
 ) -> Vec<(TextIndex, String)> {
   let mut v = Vec::new();
@@ -565,7 +579,7 @@ fn text_list_from_subitem4(
 
 fn text_list_from_subitem5(
   para_num: &ArticleNumber,
-  items: Vec<ArticleNumber>,
+  items: Vec<Option<ArticleNumber>>,
   chldren: &[Subitem5],
 ) -> Vec<(TextIndex, String)> {
   let mut v = Vec::new();
@@ -594,7 +608,7 @@ fn text_list_from_subitem5(
 
 fn text_list_from_subitem6(
   para_num: &ArticleNumber,
-  items: Vec<ArticleNumber>,
+  items: Vec<Option<ArticleNumber>>,
   chldren: &[Subitem6],
 ) -> Vec<(TextIndex, String)> {
   let mut v = Vec::new();
@@ -623,7 +637,7 @@ fn text_list_from_subitem6(
 
 fn text_list_from_subitem7(
   para_num: &ArticleNumber,
-  items: Vec<ArticleNumber>,
+  items: Vec<Option<ArticleNumber>>,
   chldren: &[Subitem7],
 ) -> Vec<(TextIndex, String)> {
   let mut v = Vec::new();
@@ -652,7 +666,7 @@ fn text_list_from_subitem7(
 
 fn text_list_from_subitem8(
   para_num: &ArticleNumber,
-  items: Vec<ArticleNumber>,
+  items: Vec<Option<ArticleNumber>>,
   chldren: &[Subitem8],
 ) -> Vec<(TextIndex, String)> {
   let mut v = Vec::new();
@@ -681,7 +695,7 @@ fn text_list_from_subitem8(
 
 fn text_list_from_subitem9(
   para_num: &ArticleNumber,
-  items: Vec<ArticleNumber>,
+  items: Vec<Option<ArticleNumber>>,
   chldren: &[Subitem9],
 ) -> Vec<(TextIndex, String)> {
   let mut v = Vec::new();
@@ -710,7 +724,7 @@ fn text_list_from_subitem9(
 
 fn text_list_from_subitem10(
   para_num: &ArticleNumber,
-  items: Vec<ArticleNumber>,
+  items: Vec<Option<ArticleNumber>>,
   chldren: &[Subitem10],
 ) -> Vec<(TextIndex, String)> {
   let mut v = Vec::new();
@@ -810,7 +824,7 @@ fn check_para_to_text() {
           sentence: class::SentenceOrColumnOrTable::Sentence(vec![text_to_sentence(1, "元本を領収し、又は利用すること。")]),
           children: Vec::new(),
           struct_list: Vec::new(),
-          num: ArticleNumber::from_num_str("1").unwrap(),
+          num: Some(ArticleNumber::from_num_str("1").unwrap()),
           delete: false,
           hide: false
         },
@@ -823,13 +837,13 @@ fn check_para_to_text() {
               sentence: class::SentenceOrColumnOrTable::Sentence(vec![text_to_sentence(1, "主たる債務者の総株主の議決権（株主総会において決議をすることができる事項の全部につき議決権を行使することができない株式についての議決権を除く。以下この号において同じ。）の過半数を有する者")]),
               children: Vec::new(),
               struct_list: Vec::new(),
-              num: ArticleNumber::from_num_str("1").unwrap(),
+              num: Some(ArticleNumber::from_num_str("1").unwrap()),
               delete: false,
               hide: false
             }
           ],
           struct_list: Vec::new(),
-          num: ArticleNumber::from_num_str("2").unwrap(),
+          num: Some(ArticleNumber::from_num_str("2").unwrap()),
           delete: false,
           hide: false
         },
@@ -838,7 +852,7 @@ fn check_para_to_text() {
           sentence: class::SentenceOrColumnOrTable::Sentence(vec![text_to_sentence(1, "不動産その他重要な財産に関する権利の得喪を目的とする行為をすること。")]),
           children: Vec::new(),
           struct_list: Vec::new(),
-          num: ArticleNumber::from_num_str("3").unwrap(),
+          num: Some(ArticleNumber::from_num_str("3").unwrap()),
           delete: false,
           hide: false
         }
@@ -892,7 +906,7 @@ fn check_para_to_text() {
             eda_numbers: Vec::new(),
             range_end_numbers: Vec::new()
           },
-          items: vec![ArticleNumber{base_number: 1, eda_numbers: Vec::new(), range_end_numbers: Vec::new()}]
+          items: vec![Some(ArticleNumber{base_number:1,eda_numbers:Vec::new(),range_end_numbers:Vec::new()})]
         },
         "元本を領収し、又は利用すること。".to_string()
       ),
@@ -903,7 +917,7 @@ fn check_para_to_text() {
             eda_numbers: Vec::new(),
             range_end_numbers: Vec::new()
           },
-          items: vec![ArticleNumber{base_number: 2, eda_numbers: Vec::new(), range_end_numbers: Vec::new()}]
+          items: vec![Some(ArticleNumber{base_number:2,eda_numbers:Vec::new(),range_end_numbers:Vec::new()})]
         },
         "主たる債務者が法人である場合の次に掲げる者".to_string()
       ),
@@ -914,8 +928,8 @@ fn check_para_to_text() {
             eda_numbers: Vec::new(),
             range_end_numbers: Vec::new()
           },
-          items: vec![ArticleNumber{base_number: 2, eda_numbers: Vec::new(), range_end_numbers: Vec::new()},
-          ArticleNumber{base_number: 1, eda_numbers: Vec::new(), range_end_numbers: Vec::new()}]
+          items: vec![Some(ArticleNumber{base_number:2,eda_numbers:Vec::new(),range_end_numbers:Vec::new()}),
+          Some(ArticleNumber{base_number:1,eda_numbers:Vec::new(),range_end_numbers:Vec::new()})]
         },
         "主たる債務者の総株主の議決権（株主総会において決議をすることができる事項の全部につき議決権を行使することができない株式についての議決権を除く。以下この号において同じ。）の過半数を有する者".to_string()
       ),
@@ -926,7 +940,7 @@ fn check_para_to_text() {
             eda_numbers: Vec::new(),
             range_end_numbers: Vec::new()
           },
-          items: vec![ArticleNumber{base_number: 3, eda_numbers: Vec::new(), range_end_numbers: Vec::new()}]
+          items: vec![Some(ArticleNumber{base_number:3,eda_numbers:Vec::new(),range_end_numbers:Vec::new()})]
         },
         "不動産その他重要な財産に関する権利の得喪を目的とする行為をすること。".to_string()
       ),
