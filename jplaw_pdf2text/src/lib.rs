@@ -8,10 +8,16 @@ pub enum Pdf2TextError {
   IoError(String),
   #[error("pdf read error({0}): {1}")]
   PdfReadError(OutputError, String),
+  #[error("pdf panic")]
+  PdfPanic,
 }
 
 /// 文字列の抽出
 pub fn pdf_bytes_to_text(bytes: &[u8]) -> Result<String, Pdf2TextError> {
+  let result = std::panic::catch_unwind(|| pdf_extract::extract_text_from_mem(bytes));
+  if result.is_err() {
+    return Err(Pdf2TextError::PdfPanic);
+  }
   let s = pdf_extract::extract_text_from_mem(bytes)
     .map_err(|e| Pdf2TextError::PdfReadError(e, "bytes".to_string()))?;
   Ok(s)
@@ -20,6 +26,10 @@ pub fn pdf_bytes_to_text(bytes: &[u8]) -> Result<String, Pdf2TextError> {
 /// ファイルからの文字列の抽出
 pub fn pdf_file_to_text(path: &str) -> Result<String, Pdf2TextError> {
   let bytes = std::fs::read(path).map_err(|_| Pdf2TextError::IoError(path.to_string()))?;
+  let result = std::panic::catch_unwind(|| pdf_extract::extract_text_from_mem(&bytes));
+  if result.is_err() {
+    return Err(Pdf2TextError::PdfPanic);
+  }
   let s = pdf_extract::extract_text_from_mem(&bytes)
     .map_err(|e| Pdf2TextError::PdfReadError(e, path.to_string()))?;
   Ok(s)
