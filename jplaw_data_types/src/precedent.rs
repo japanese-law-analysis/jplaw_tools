@@ -39,8 +39,8 @@ impl PrecedentInfo {
   /// データの入ったファイル名を生成する
   pub fn file_name(&self) -> String {
     format!(
-      "{}_{}_{}.json",
-      self.case_number, self.court_name, self.lawsuit_id
+      "{}_{}_{:?}_{}.json",
+      self.case_number, self.court_name, self.trial_type, self.lawsuit_id
     )
   }
 }
