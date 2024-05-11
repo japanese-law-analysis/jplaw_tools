@@ -33,7 +33,7 @@ pub struct JoreiData {
   #[serde(default)]
   pub collected_date: Vec<String>,
   #[serde(default)]
-  pub updated_date: Vec<String>,
+  pub updated_date: Vec<Date>,
   pub municipality_id: String,
   #[serde(skip_serializing_if = "Option::is_none")]
   pub prefecture: Option<String>,
