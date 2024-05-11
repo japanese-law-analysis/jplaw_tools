@@ -101,5 +101,6 @@ pub struct PrecedentData {
   /// 判決文全文のPDFリンク
   pub full_pdf_link: String,
   /// 判決文全文
-  pub contents: String,
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub contents: Option<String>,
 }
