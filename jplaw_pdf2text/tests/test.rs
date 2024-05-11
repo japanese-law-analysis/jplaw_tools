@@ -3,14 +3,14 @@ use jplaw_pdf2text::*;
 #[test]
 fn check_1() {
   let path = "tests/092891_hanrei.pdf";
-  let s = pdf2text(path).unwrap();
+  let s = pdf_file_to_text(path).unwrap();
   assert!(s.contains("他方、被告人は、当公判廷において反省の態度を示すだけでなく、保釈後、本"));
 }
 
 #[test]
 fn check_clean_up() {
   let path = "tests/092900_hanrei.pdf";
-  let s = pdf2text(path).unwrap();
+  let s = pdf_file_to_text(path).unwrap();
   let s = clean_up(&s);
   assert!(s.contains(
     "３  被告のため、この判決に対する上告及び上告受理申立てのための付加\n期間を３０日と定める。"

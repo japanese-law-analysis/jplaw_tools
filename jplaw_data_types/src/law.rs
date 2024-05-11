@@ -1175,7 +1175,7 @@ fn check_from_str_law_id_2() {
 
 /// 法令のデータ
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
-pub struct LawData {
+pub struct LawInfo {
   /// 制定年月日
   pub date: Date,
   /// 法令名

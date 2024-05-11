@@ -23,6 +23,28 @@ pub enum TrialType {
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct PrecedentInfo {
+  /// 事件番号
+  pub case_number: String,
+  /// 裁判所・部・法廷名
+  pub court_name: String,
+  /// 裁判年月日
+  pub date: Date,
+  /// 事件に振られているID
+  pub lawsuit_id: String,
+}
+
+impl PrecedentInfo {
+  /// データの入ったファイル名を生成する
+  pub fn file_name(&self) -> String {
+    format!(
+      "{}_{}_{}.json",
+      self.case_number, self.court_name, self.lawsuit_id
+    )
+  }
+}
+
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+pub struct PrecedentData {
   /// 裁判の種類
   pub trial_type: TrialType,
   /// 裁判年月日
@@ -76,6 +98,8 @@ pub struct PrecedentInfo {
   pub lawsuit_id: String,
   /// 詳細が乗っているページ
   pub detail_page_link: String,
-  /// 判決文前文
+  /// 判決文全文のPDFリンク
   pub full_pdf_link: String,
+  /// 判決文全文
+  pub contents: String,
 }

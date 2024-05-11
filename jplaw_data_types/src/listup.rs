@@ -10,11 +10,15 @@ pub struct AbbInfo {
   abbs: Vec<String>,
 }
 
-/// 法令の情報
-pub type LawInfo = crate::law::LawData;
+/// 法令のインデックス情報
+pub type LawInfo = crate::law::LawInfo;
 
-/// 条例の情報
+/// 条例のインデックス情報
 pub type JoreiInfo = crate::jorei::JoreiInfo;
+/// 条例の詳細データ
+pub type JoreiData = crate::jorei::JoreiData;
 
-/// 判例の情報
+/// 判例のインデックス情報
 pub type PrecedentInfo = crate::precedent::PrecedentInfo;
+/// 判例の詳細データ
+pub type PrecedentData = crate::precedent::PrecedentData;

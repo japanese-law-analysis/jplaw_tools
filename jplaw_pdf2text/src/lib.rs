@@ -11,7 +11,14 @@ pub enum Pdf2TextError {
 }
 
 /// 文字列の抽出
-pub fn pdf2text(path: &str) -> Result<String, Pdf2TextError> {
+pub fn pdf_bytes_to_text(bytes: &[u8]) -> Result<String, Pdf2TextError> {
+  let s = pdf_extract::extract_text_from_mem(bytes)
+    .map_err(|e| Pdf2TextError::PdfReadError(e, "bytes".to_string()))?;
+  Ok(s)
+}
+
+/// ファイルからの文字列の抽出
+pub fn pdf_file_to_text(path: &str) -> Result<String, Pdf2TextError> {
   let bytes = std::fs::read(path).map_err(|_| Pdf2TextError::IoError(path.to_string()))?;
   let s = pdf_extract::extract_text_from_mem(&bytes)
     .map_err(|e| Pdf2TextError::PdfReadError(e, path.to_string()))?;

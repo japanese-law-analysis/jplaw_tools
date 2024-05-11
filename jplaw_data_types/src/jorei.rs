@@ -1,10 +1,33 @@
 //! 条例に使うデータ構造
 
+use crate::law::Date;
 use serde::{Deserialize, Serialize};
 
-/// 条例の情報
+/// 条例の一覧のための情報
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct JoreiInfo {
+  /// 名前
+  pub title: String,
+  /// ファイル名にもなるID
+  pub id: String,
+  pub reiki_id: String,
+  /// 県
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub prefecture: Option<String>,
+  /// 市町村名
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub city: Option<String>,
+  /// 公布年月日
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub announcement_date: Option<Date>,
+  /// 改正年月日
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub updated_date: Option<Date>,
+}
+
+/// 条例の中身
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
+pub struct JoreiData {
   #[serde(default)]
   pub collection: Vec<String>,
   #[serde(default)]
@@ -28,10 +51,10 @@ pub struct JoreiInfo {
   pub h1: Option<String>,
   pub title: String,
   #[serde(skip_serializing_if = "Option::is_none")]
-  pub announcement_date: Option<String>,
-  pub r#type: String,
+  pub announcement_date: Option<Date>,
+  pub jorei_type: String,
   #[serde(skip_serializing_if = "Option::is_none")]
-  pub last_updated_date: Option<String>,
+  pub last_updated_date: Option<Date>,
   #[serde(skip_serializing_if = "Option::is_none")]
   pub reiki_dates: Option<Vec<String>>,
   #[serde(skip_serializing_if = "Option::is_none")]
