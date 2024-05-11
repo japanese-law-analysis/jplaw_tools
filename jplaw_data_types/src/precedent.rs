@@ -27,6 +27,8 @@ pub struct PrecedentInfo {
   pub case_number: String,
   /// 裁判所・部・法廷名
   pub court_name: String,
+  /// 裁判の種類
+  pub trial_type: TrialType,
   /// 裁判年月日
   pub date: Date,
   /// 事件に振られているID
