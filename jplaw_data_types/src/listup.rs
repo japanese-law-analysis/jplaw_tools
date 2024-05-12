@@ -6,8 +6,8 @@ use serde::{Deserialize, Serialize};
 /// <https://elaws.e-gov.go.jp/abb/>
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct AbbInfo {
-  num: String,
-  abbs: Vec<String>,
+  pub num: String,
+  pub abbs: Vec<String>,
 }
 
 /// 法令のインデックス情報
