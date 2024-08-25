@@ -54,3 +54,16 @@ pub struct Ryakusyou {
   /// 正式名称
   seishiki: String,
 }
+
+/// 他の法律文書への参照
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub struct Reference {
+  /// 参照先の文書名
+  pub ref_name: String,
+  /// 参照先の条番号
+  pub ref_index: Option<ArticleIndex>,
+  /// 参照元の文書名
+  pub base_name: String,
+  /// 参照元の条番号
+  pub base_index: Option<ArticleIndex>,
+}
