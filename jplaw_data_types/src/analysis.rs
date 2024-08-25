@@ -66,4 +66,6 @@ pub struct Reference {
   pub base_name: String,
   /// 参照元の条番号
   pub base_index: Option<ArticleIndex>,
+  /// テキストの保持
+  pub text: String,
 }
