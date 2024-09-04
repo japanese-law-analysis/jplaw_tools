@@ -55,6 +55,20 @@ pub struct Ryakusyou {
   seishiki: String,
 }
 
+/// 略称解析中のエラー
+/// <https://github.com/japanese-law-analysis/analysis_ryakusyou>
+#[derive(Debug, Error, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum RyakusyouError {
+  /// カッコが破綻している文
+  #[error("Unmatched parentheses")]
+  UnmatchedParen,
+  /// 条文やXMLの解析中のエラー
+  #[error("XML parse error")]
+  ParseError,
+  /// 正規表現にマッチしなかった
+  #[error("Regex unmatch")]
+  RegexUnMatch,
+}
 /// 他の法律文書への参照
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Reference {
