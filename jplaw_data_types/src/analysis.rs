@@ -50,9 +50,9 @@ pub enum YomikaeError {
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Ryakusyou {
   /// 略称
-  ryakusyou: String,
+  pub ryakusyou: String,
   /// 正式名称
-  seishiki: String,
+  pub seishiki: String,
 }
 
 /// 略称解析中のエラー
