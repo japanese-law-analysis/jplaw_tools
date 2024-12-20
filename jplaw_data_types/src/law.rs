@@ -44,7 +44,7 @@ impl Date {
     let (era, year) = if (18681023..=19120729).contains(&t) {
       (Meiji, year - 1867)
     } else if (19120730..=19261224).contains(&t) {
-      (Taisho, year - 1920)
+      (Taisho, year - 1911)
     } else if (19261225..=19890107).contains(&t) {
       (Showa, year - 1925)
     } else if (19890108..=20190430).contains(&t) {
@@ -61,6 +61,20 @@ impl Date {
       day: Some(day),
     }
   }
+}
+
+#[test]
+fn check_date_gen() {
+  let d = Date::gen_from_ad(1923, 06, 20);
+  assert_eq!(
+    d,
+    Date {
+      era: Era::Taisho,
+      year: 12,
+      month: Some(6),
+      day: Some(20)
+    }
+  )
 }
 
 impl PartialOrd for Date {
