@@ -954,7 +954,7 @@ impl Display for LawIdType {
         f,
         "RJNJ{kind:02}{kind_serial_number:03}{amendment_serial_number:03}"
       ),
-      Regulation { institution, num } => write!(f, "R{:>07}{num:03}", institution.to_int()),
+      Regulation { institution, num } => write!(f, "R{:>08}{num:03}", institution.to_int()),
       PrimeMinisterDecision { month, day, num } => write!(f, "RPMD{month:02}{day:02}{num:04}"),
     }
   }
@@ -1229,6 +1229,7 @@ fn check_from_str_law_id_lst() {
     "345AC0000000089",
     "505M60000400060",
     "505M60000040019",
+    "326R00000011009",
   ];
   for s in v.iter() {
     let law_id = LawId::from_str(s).unwrap();
