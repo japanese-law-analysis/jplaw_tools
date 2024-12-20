@@ -744,6 +744,13 @@ fn ministry_list_to_usize<T: MinistryContents>(l: &[T]) -> usize {
   n as usize
 }
 
+#[test]
+fn check_ministry_list_to_usize() {
+  let m = vec![M6Ministry::MinistryOfEconomyAndTradeAndIndustryOrdinance];
+  let n = ministry_list_to_usize(&m);
+  assert_eq!(n, 0x400);
+}
+
 fn list_from_str<T: MinistryContents + std::fmt::Debug>(byte_s: &str) -> Result<Vec<T>, ()> {
   let chars = byte_s.chars();
   let mut v = Vec::new();
@@ -932,12 +939,12 @@ impl Display for LawIdType {
         LawEfficacy::CabinetOrder => write!(f, "DH0000000{num:03}"),
       },
       MinistryOrder { ministry, num } => match &ministry {
-        Ministry::M1(m) => write!(f, "M1{:X>07}{num:03}", ministry_list_to_usize(m)),
-        Ministry::M2(m) => write!(f, "M2{:X>07}{num:03}", ministry_list_to_usize(m)),
-        Ministry::M3(m) => write!(f, "M3{:X>07}{num:03}", ministry_list_to_usize(m)),
-        Ministry::M4(m) => write!(f, "M4{:X>07}{num:03}", ministry_list_to_usize(m)),
+        Ministry::M1(m) => write!(f, "M1{:07X}{num:03}", ministry_list_to_usize(m)),
+        Ministry::M2(m) => write!(f, "M2{:07X}{num:03}", ministry_list_to_usize(m)),
+        Ministry::M3(m) => write!(f, "M3{:07X}{num:03}", ministry_list_to_usize(m)),
+        Ministry::M4(m) => write!(f, "M4{:07X}{num:03}", ministry_list_to_usize(m)),
         Ministry::M5(m) => write!(f, "M5{:07X}{num:03}", ministry_list_to_usize(m)),
-        Ministry::M6(m) => write!(f, "M6{:X>07}{num:03}", ministry_list_to_usize(m)),
+        Ministry::M6(m) => write!(f, "M6{:07X}{num:03}", ministry_list_to_usize(m)),
       },
       Jinjin {
         kind,
@@ -1171,6 +1178,63 @@ fn check_from_str_law_id_2() {
     }
   );
   assert_eq!(law_id.to_string(), s);
+}
+
+#[test]
+fn check_from_str_law_id_3() {
+  let s = "505M60000400060";
+  let law_id = LawId::from_str(s).unwrap();
+  assert_eq!(
+    law_id,
+    LawId {
+      era: Era::Reiwa,
+      year: 5,
+      law_id_type: LawIdType::MinistryOrder {
+        ministry: Ministry::M6(vec![
+          M6Ministry::MinistryOfEconomyAndTradeAndIndustryOrdinance
+        ]),
+        num: 60
+      }
+    }
+  );
+  assert_eq!(law_id.to_string(), s);
+}
+
+#[test]
+fn check_from_str_law_id_4() {
+  let s = "505M60001024060";
+  let law_id = LawId::from_str(s).unwrap();
+  assert_eq!(
+    law_id,
+    LawId {
+      era: Era::Reiwa,
+      year: 5,
+      law_id_type: LawIdType::MinistryOrder {
+        ministry: Ministry::M6(vec![
+          M6Ministry::MinistryOfTheEnvironmentOrdinance,
+          M6Ministry::MinistryOfForeignAffairsOrdinance,
+          M6Ministry::ReconstructionAgencyOrdinance,
+        ]),
+        num: 60
+      }
+    }
+  );
+  assert_eq!(law_id.to_string(), s);
+}
+
+#[test]
+fn check_from_str_law_id_lst() {
+  let v = vec![
+    "325M50001000004",
+    "345AC0000000089",
+    "505M60000400060",
+    "505M60000040019",
+  ];
+  for s in v.iter() {
+    let law_id = LawId::from_str(s).unwrap();
+    let s2 = format!("{law_id}");
+    assert_eq!(s, &s2);
+  }
 }
 
 /// 法令のデータ
