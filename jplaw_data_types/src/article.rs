@@ -26,12 +26,18 @@ pub struct ArticleIndex {
   pub law_name: String,
   /// 条番号
   pub article_number: ArticleNumber,
+  #[serde(skip_serializing_if = "Option::is_none")]
   pub part_number: Option<ArticleNumber>,
+  #[serde(skip_serializing_if = "Option::is_none")]
   pub chapter_number: Option<ArticleNumber>,
+  #[serde(skip_serializing_if = "Option::is_none")]
   pub section_number: Option<ArticleNumber>,
+  #[serde(skip_serializing_if = "Option::is_none")]
   pub subsection_number: Option<ArticleNumber>,
+  #[serde(skip_serializing_if = "Option::is_none")]
   pub division_number: Option<ArticleNumber>,
   /// 附則の場合は付加された改正法の法令番号
+  #[serde(skip_serializing_if = "Option::is_none")]
   pub suppl_provision_name: Option<String>,
 }
 
