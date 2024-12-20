@@ -1265,6 +1265,24 @@ pub struct LawPatchInfo {
   pub patch_id: Option<LawId>,
 }
 
+impl LawPatchInfo {
+  // ファイルパスに変換する
+  pub fn to_file_path(&self) -> String {
+    let patch_id_str = if let Some(patch_id) = &self.patch_id {
+      format!("{patch_id}")
+    } else {
+      "000000000000000".to_string()
+    };
+    format!(
+      "{}_{}{:02}{:02}_{patch_id_str}",
+      self.id,
+      self.patch_date.get_ad(),
+      self.patch_date.month.unwrap_or_default(),
+      self.patch_date.day.unwrap_or_default()
+    )
+  }
+}
+
 impl FromStr for LawPatchInfo {
   type Err = ();
   fn from_str(s: &str) -> Result<Self, Self::Err> {
